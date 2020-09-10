@@ -40,37 +40,25 @@ class GenerateText():
     def __init__(self):
         pass
 
-    def generate_text(self, model, start_string):
-
-      num_generate = 500
-
-      # Converting our start string to numbers (vectorizing)
+    def generate_text(self, model, start_string, num_generate=500, temperature= 1.0):
+      # num_generate = 500
       input_eval = [char2idx[s] for s in start_string]
       # print(len(input_eval))
       input_eval = tf.expand_dims(input_eval, 0)
       # print(input_eval.shape)
-
       text_generated = []
-
       # Low temperatures results in more predictable text.
       # Higher temperatures results in more surprising text.
-      temperature = 0.10
+      # temperature = 0.10
 
-      # Here batch size == 1
       model.reset_states()
       for i in range(num_generate):
         predictions = model(input_eval)
-        # remove the batch dimension
         predictions = tf.squeeze(predictions, 0)
-
         # using a categorical distribution to predict the character returned by the model
         predictions = predictions / temperature
         predicted_id = tf.random.categorical(predictions, num_samples=1)[-1,0].numpy()
-
-        # We pass the predicted character as the next input to the model
-        # along with the previous hidden state
         input_eval = tf.expand_dims([predicted_id], 0)
-
         text_generated.append(idx2char[predicted_id])
 
       return (start_string + ''.join(text_generated))
@@ -81,7 +69,6 @@ char2idx = PrepareModel().load_pickle("char2idx.pkl")
 idx2char = PrepareModel().load_pickle("idx2char.pkl")
 vocab_size = len(char2idx)
 # print(idx2char[char2idx.get('ö')])
-
 embedding_dim = 256
 rnn_units = 1024
 batch_size = 1
