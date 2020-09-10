@@ -9,24 +9,32 @@ import re
 import string
 
 import tensorflow as tf
-from tensorflow import keras
-import numpy as np
+# from tensorflow import keras
+# import numpy as np
 print("TF version: ", tf.__version__)
-print("Keras version:", keras.__version__)
+# print("Keras version:", keras.__version__)
 print("CWD: ", Path().absolute())
 
 from prepare import PrepareModel, GenerateText
 
 
 #%%
-char2idx = PrepareModel().load_pickle("char2idx.pkl")
-idx2char = PrepareModel().load_pickle("idx2char.pkl")
-vocab_size = len(char2idx)
-# print(idx2char[char2idx.get('ö')])
+def main(text):
+    char2idx = PrepareModel().load_pickle("char2idx.pkl")
+    idx2char = PrepareModel().load_pickle("idx2char.pkl")
+    vocab_size = len(char2idx)
+    # print(idx2char[char2idx.get('ö')])
 
-embedding_dim = 256
-rnn_units = 1024
-batch_size = 1
+    embedding_dim = 256
+    rnn_units = 1024
+    batch_size = 1
 
-model = PrepareModel().build_model(vocab_size, embedding_dim, rnn_units, batch_size=1)
-print(GenerateText().generate_text(model, start_string=u"akşam olunca "))
+    model = PrepareModel().build_model(vocab_size, embedding_dim, rnn_units, batch_size=1)
+    generated_text = GenerateText().generate_text(model, start_string=u"{0}".format(text))
+
+    return generated_text
+
+#%%
+text = "abimden kork"
+generated_text = main(text)
+print(generated_text)
