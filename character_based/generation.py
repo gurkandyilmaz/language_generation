@@ -3,7 +3,7 @@ import sys
 print("Python Executable at: ", sys.executable)
 print("Python version: ", sys.version)
 
-from pathlib import Path
+from pathlib import Path, PurePath
 import pickle
 import re
 import string
@@ -14,6 +14,8 @@ import numpy as np
 print("TF version: ", tf.__version__)
 print("Keras version:", keras.__version__)
 print("CWD: ", Path().absolute())
+
+
 
 #%% Load File
 def load_file(file_path):
